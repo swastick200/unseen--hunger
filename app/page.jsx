@@ -48,17 +48,17 @@ const menuSections = [
         description: "A local favorite with rich chicken filling and a satisfying street-style finish.",
         image: localImages.creamyChicken,
       },
+      {
+        name: "BBQ Club Sandwich",
+        price: "Rs.219",
+        description: "Loaded, cheesy, and stacked for the bigger hunger mood.",
+        image: localImages.bbqClub,
+      },
     ],
   },
   {
     title: "Appetizers & Fried Bites",
     items: [
-      {
-        name: "Crispy Chicken Finger (6 pcs)",
-        price: "Rs.119",
-        description: "Verified from Swiggy listing as a crispy garlic-forward starter.",
-        image: localImages.bbqClub,
-      },
       {
         name: "Fried Momo Chicken (5 pcs)",
         price: "Rs.139",
@@ -66,10 +66,11 @@ const menuSections = [
         image: localImages.friedMomos,
       },
       {
-        name: "BBQ Club Sandwich",
-        price: "Rs.219",
-        description: "Loaded, cheesy, and stacked, using your provided image in place of fried chicken wings.",
-        image: localImages.bbqClub,
+        name: "Crispy Chicken Finger (6 pcs)",
+        price: "Rs.119",
+        description: "Verified from the public menu as a crispy fried starter for sharing.",
+        noImage: true,
+        note: "Listed without a separate photo so the menu stays accurate.",
       },
     ],
   },
@@ -77,22 +78,15 @@ const menuSections = [
     title: "Fries & Snacks",
     items: [
       {
-        name: "French Fry Medium",
-        price: "Rs.89",
-        description: "Classic golden fries from the verified Swiggy appetizers menu.",
+        name: "French Fries",
+        price: "Rs.89 - Rs.129",
+        description: "Classic fries, bigger portions, and chilli garlic cravings grouped under one real fries photo.",
         image: localImages.fries,
-      },
-      {
-        name: "French Fry Large",
-        price: "Rs.129",
-        description: "A bigger serving for sharing, evening hangouts, or bigger cravings.",
-        image: localImages.fries,
-      },
-      {
-        name: "Chilli Garlic French Fries",
-        price: "Rs.129",
-        description: "Spiced and garlicky fries listed publicly as a serves-for-two snack.",
-        image: localImages.fries,
+        variants: [
+          { label: "French Fry Medium", price: "Rs.89" },
+          { label: "French Fry Large", price: "Rs.129" },
+          { label: "Chilli Garlic French Fries", price: "Rs.129" },
+        ],
       },
     ],
   },
@@ -123,16 +117,14 @@ const menuSections = [
     title: "Drinks",
     items: [
       {
-        name: "Masala Chai",
-        price: "Approx. Rs.30",
-        description: "A budget-friendly hot drink that fits the tea-focused listing profile.",
+        name: "Hot & Cold Drinks",
+        price: "Approx. Rs.30 - Rs.80",
+        description: "One shared drinks photo, with the two menu favorites listed clearly underneath.",
         image: localImages.teaCoffee,
-      },
-      {
-        name: "Cold Coffee",
-        price: "Approx. Rs.80",
-        description: "A review-highlighted bestseller pairing with pizza and sandwiches.",
-        image: localImages.teaCoffee,
+        variants: [
+          { label: "Masala Chai", price: "Approx. Rs.30" },
+          { label: "Cold Coffee", price: "Approx. Rs.80" },
+        ],
       },
     ],
   },
@@ -207,8 +199,9 @@ export default function HomePage() {
   async function handleFeedbackSubmit(event) {
     event.preventDefault();
     setFeedbackStatus("Sending feedback...");
+    const form = event.currentTarget;
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const entry = {
       id: Date.now(),
       name: formData.get("name"),
@@ -222,7 +215,7 @@ export default function HomePage() {
       const existing = JSON.parse(window.localStorage.getItem(localFeedbackKey) || "[]");
       existing.unshift({ ...entry, localOnly: true });
       window.localStorage.setItem(localFeedbackKey, JSON.stringify(existing));
-      event.currentTarget.reset();
+      form.reset();
       setFeedbackStatus("Backend unavailable. Open the site through http://localhost:3000 to save centrally. Saved locally on this device for now.");
     };
 
@@ -253,7 +246,7 @@ export default function HomePage() {
         throw new Error(data.error || "Failed to send feedback.");
       }
 
-      event.currentTarget.reset();
+      form.reset();
       setFeedbackStatus("Thanks. Your feedback has been saved.");
     } catch (error) {
       if (canUseLocalFallback) {
@@ -416,14 +409,25 @@ export default function HomePage() {
                 </div>
                 <div className="menu-grid">
                   {section.items.map((item) => (
-                    <article className="food-card" key={item.name}>
-                      <img src={item.image} alt={item.name} />
+                    <article className={`food-card ${item.noImage ? "food-card-text" : ""}`} key={item.name}>
+                      {item.image ? <img src={item.image} alt={item.name} /> : null}
                       <div className="food-card-content">
                         <div className="food-card-top">
                           <h3>{item.name}</h3>
                           <span>{item.price}</span>
                         </div>
                         <p>{item.description}</p>
+                        {item.variants ? (
+                          <div className="food-variants">
+                            {item.variants.map((variant) => (
+                              <div className="food-variant" key={variant.label}>
+                                <strong>{variant.label}</strong>
+                                <span>{variant.price}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
+                        {item.note ? <p className="food-card-note">{item.note}</p> : null}
                       </div>
                     </article>
                   ))}

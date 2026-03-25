@@ -457,6 +457,13 @@ h2 {
   overflow: hidden;
 }
 
+.food-card-text {
+  min-height: 100%;
+  background:
+    linear-gradient(135deg, rgba(255, 106, 0, 0.09), rgba(255, 194, 71, 0.04)),
+    var(--panel);
+}
+
 .food-card img {
   height: 260px;
   object-fit: cover;
@@ -483,6 +490,39 @@ h2 {
   white-space: nowrap;
   color: var(--accent-3);
   font-weight: 800;
+}
+
+.food-variants {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.food-variant {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.food-variant strong {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.food-variant span {
+  color: var(--accent-3);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.food-card-note {
+  margin: 1rem 0 0;
+  color: var(--accent-3);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .popular-grid {
