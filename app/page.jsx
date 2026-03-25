@@ -685,7 +685,6 @@ export default function HomePage() {
           <p>Hours vary across public listings</p>
         </div>
           <p className="footer-copy">
-            <span>Copyright 2026 Unseen Hunger. All rights reserved.</span>
             <span className="footer-credit-line">Copyright 2026 Swastick Kumar Das. All rights reserved.</span>
             <span className="footer-credit-line">Developed by Swastick Kumar Das 2026</span>
             <a className="admin-link" href="/admin">
